@@ -1,3 +1,4 @@
+import time
 import yaml
 import boto3
 
@@ -22,13 +23,26 @@ ATHENA = boto3.client('athena', aws_access_key_id=CONFIG['aws_access_key_id'],
 def lambda_handler(event, context):
 
     bucket, key = CONFIG['s3agg']['bucket'], CONFIG['s3agg']['key']
+
+    ATHENA.start_query_execution(
+        QueryString='DROP TABLE IF EXISTS `covid_agg`;',
+        QueryExecutionContext={
+            'Database': CONFIG['database'],
+        },
+        ResultConfiguration={
+            'OutputLocation': f's3://{bucket}/{key}'
+        }
+    )
+
+    time.sleep(3)
+
     ATHENA.start_query_execution(
         QueryString=QUERY,
         QueryExecutionContext={
             'Database': CONFIG['database'],
         },
         ResultConfiguration={
-            'OutputLocation': f's3://{bucket}/{key}',
+            'OutputLocation': f's3://{bucket}/{key}'
         }
     )
 
