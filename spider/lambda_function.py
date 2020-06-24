@@ -27,14 +27,15 @@ def get_urls():
 
 
 def get_consumed_urls():
-    s3obj = CONFIG['s3']['consumed']
-    obj = S3RES.Object(s3obj['bucket'], s3obj['key'])
-    local_file = '/tmp/consumed.json'
-    with open(local_file, 'wb') as f:
-        obj.download_fileobj(f)
-    with open(local_file, 'r') as f:
-        consumed = json.load(f)
-    os.unlink(local_file)
+    rex_data = re.compile(
+        r'.*/(?P<ano>\d{4})_(?P<mes>\d{2})_(?P<dia>\d{2}).csv')
+    s3obj = CONFIG['s3']['csvs']
+    bucket = S3RES.Bucket(s3obj['bucket'])
+    consumed = []
+    for obj in bucket.objects.filter(Prefix=s3obj['key']):
+        if obj.key.endswith('.csv'):
+            m = rex_data.search(obj.key)
+            consumed.append(RAW_URL(m['mes'], m['dia'], m['ano']))
     return consumed
 
 
