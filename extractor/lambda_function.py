@@ -29,18 +29,29 @@ def transform_csv(csv_matrix, date):
 
     template = [(h in _fields) for h in csv_matrix[0]]
 
-    new_csv = [list(filter(lambda x: x in _fields, csv_matrix[0])) + ['date']]
+    temp_headers = [h for h in csv_matrix[0] if h in _fields]
+    pos = [temp_headers.index(f) for f in _fields[:-1]]
+
+    def sort_data(row):
+        new_row = row.copy()
+        for i in range(len(pos)):
+            new_row[i] = row[pos[i]]
+        return new_row
+
+    new_csv = [
+        sort_data(list(filter(lambda x: x in _fields, csv_matrix[0]))) + ['date']]
 
     for row in csv_matrix[1:]:
-        new_row = list(
+        new_row = sort_data(list(
             map(
                 lambda x: x[0],
                 filter(
                     lambda x: x[1], zip(row, template)
                 )
             )
-        )
-        new_csv.append(new_row + [date])
+        )) + [date]
+
+        new_csv.append(new_row)
 
     return new_csv
 
@@ -66,7 +77,7 @@ def lambda_handler(event, context):
     download_csv(bucket, key)
 
     with open(LOCAL_CSV, 'r') as f:
-        csv_matrix = csv.reader(f, delimiter=",")
+        csv_matrix = list(csv.reader(f, delimiter=","))
 
     os.unlink(LOCAL_CSV)
 
@@ -74,9 +85,11 @@ def lambda_handler(event, context):
 
     with open(LOCAL_CSV, "w", newline="\n") as f:
         writer = csv.writer(f)
-        writer.writerows(a)
+        writer.writerows(new_csv)
 
     filename = os.path.basename(key)
     upload_csv(filename)
 
     os.unlink(LOCAL_CSV)
+
+    print('Done!!')
