@@ -13,6 +13,8 @@ The [Aggregator function](/aggregator) queries the covid table to sum recent val
 
 The aggregated table is used by the API endpoint to provide the total confirmed cases by country through the [confirmed_cases lambda function](/confirmed)
 
+> :warning: Not in this repo but in order to run some of these lambda functions, some lambda layers were created, mainly containing python libraries like pyyaml and requests
+
 ![diagram](/misc/Nina.png)
 
 ## Task

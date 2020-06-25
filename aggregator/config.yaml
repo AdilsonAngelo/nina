@@ -1,0 +1,4 @@
+database: "NinaTest"
+s3agg:
+  bucket: "nina-files"
+  key: "athena/covid_agg/"

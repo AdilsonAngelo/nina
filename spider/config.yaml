@@ -1,0 +1,7 @@
+s3:
+    consumed:
+        bucket: 'nina-files'
+        key: 'spider/consumed.json'
+    csvs:
+        bucket: 'nina-files'
+        key: 'csvs'

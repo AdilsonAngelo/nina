@@ -1,0 +1,11 @@
+s3:
+    ingest:
+        bucket: 'nina-files'
+        key: 'athena/covid'
+schema:
+    - countryregion
+    - provincestate
+    - confirmed
+    - recovered
+    - deaths
+    - date
