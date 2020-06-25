@@ -56,9 +56,9 @@ def query_result():
             state = response['QueryExecution']['Status']['State']
             print(state)
             if state == 'FAILED':
+                print(response)
                 raise RuntimeError('Athena query FAILED!')
             elif state == 'SUCCEEDED':
-                print(response)
                 s3_path = response['QueryExecution']['ResultConfiguration']['OutputLocation']
                 return s3_path
         time.sleep(1)
@@ -81,6 +81,10 @@ def digest_query(query_file):
         res = list(reader)
 
     os.unlink(local_csv)
+
+    obj.delete()
+    S3RES.Object(bucket, f'{key}.metadata').delete()
+
     return res
 
 
