@@ -7,12 +7,12 @@ with open('config.yaml', 'r') as f:
 
 QUERY = """
 CREATE TABLE covid_agg AS 
-    (SELECT provincestate,
+    (SELECT countryregion,
          SUM(confirmed) AS confirmed,
          SUM(recovered) AS recovered,
          SUM(deaths) AS deaths
     FROM COVID
-    GROUP BY  provincestate
+    GROUP BY  countryregion
     ORDER BY  confirmed DESC)
 """
 
