@@ -8,10 +8,11 @@ with open('config.yaml', 'r') as f:
 QUERY = """
 CREATE TABLE covid_agg AS 
     (SELECT countryregion,
-         SUM(confirmed) AS confirmed,
-         SUM(recovered) AS recovered,
-         SUM(deaths) AS deaths
-    FROM COVID
+    SUM(confirmed) AS confirmed
+    FROM covid
+    WHERE date = 
+        (SELECT MAX(date)
+        FROM COVID)
     GROUP BY  countryregion
     ORDER BY  confirmed DESC)
 """
